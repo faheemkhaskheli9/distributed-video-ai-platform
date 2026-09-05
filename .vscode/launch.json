@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run synthetic video streams",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "video_platform.cli",
+      "args": ["--streams", "3", "--frames", "2", "--fps", "10", "--width", "320", "--height", "180"],
+      "cwd": "${workspaceFolder}",
+      "env": {"PYTHONPATH": "${workspaceFolder}/src"},
+      "justMyCode": true
+    }
+  ]
+}

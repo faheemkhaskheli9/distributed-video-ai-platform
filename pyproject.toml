@@ -3,3 +3,10 @@ name = "distributed-video-ai-platform"
 version = "0.1.0"
 description = "Large-Scale Video Analytics Architecture"
 requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

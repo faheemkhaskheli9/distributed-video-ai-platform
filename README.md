@@ -4,7 +4,7 @@
 > This is an original, from-scratch build. It is not affiliated with, and does not
 > contain any code, prompts, data, or business logic from, any employer or client.
 
-![status](https://img.shields.io/badge/status-planned-lightgrey)
+![status](https://img.shields.io/badge/status-in_progress-blue)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -96,9 +96,15 @@ No proprietary, employer-owned, or client-identifiable data is used in this proj
 
 Document the commands used to run training, ingestion, or the main pipeline, e.g.:
 
+Start three generated, hardware-free feeds and print two frames per feed:
+
 ```bash
-python -m src.main --config configs/default.yaml
+python -m video_platform.cli --streams 3 --frames 2 --fps 10 --width 320 --height 180
 ```
+
+The Phase 1 simulator emits newline-delimited JSON metadata. Frame pixels are
+generated deterministically in memory; Kafka publication is intentionally left
+to its dedicated Phase 1 issue.
 
 ## 10. Evaluation
 
