@@ -1,0 +1,17 @@
+# Ingestion service config — see docs/architecture.md.
+#
+# Edit this file and restart the service (`python -m video_platform.cli
+# --config configs/ingestion.yaml`) to change ingestion scale/behavior with
+# no code changes.
+
+streams: 10        # number of independent simulated camera feeds
+fps: 10.0          # frames per second per stream
+width: 320         # frame width in pixels
+height: 180        # frame height in pixels
+
+kafka:
+  # host:port of a Kafka broker (e.g. localhost:9092, matching
+  # docker/docker-compose.yml). Leave unset to run ingestion without
+  # publishing to Kafka (useful for a quick local dry run).
+  bootstrap_servers: null
+  topic: video-frames

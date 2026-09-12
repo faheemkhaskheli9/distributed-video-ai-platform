@@ -1,3 +1,4 @@
+from .config import IngestionConfig, IngestionConfigError, KafkaSettings, load_ingestion_config
 from .kafka_publisher import (
     DEFAULT_TOPIC,
     FramePublisher,
@@ -16,4 +17,8 @@ __all__ = [
     "PublishResult",
     "partition_key",
     "serialize_frame",
+    "IngestionConfig",
+    "IngestionConfigError",
+    "KafkaSettings",
+    "load_ingestion_config",
 ]

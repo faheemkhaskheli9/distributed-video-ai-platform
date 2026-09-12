@@ -123,6 +123,20 @@ relative to each other. See `src/video_platform/kafka_publisher.py` for the
 serialization format and `docker/docker-compose.yml` for the local
 single-broker dev/test instance.
 
+**YAML-configurable ingestion:** `configs/ingestion.yaml` controls stream
+count, fps, resolution, and Kafka connection settings without a code
+change — edit the file and restart:
+
+```bash
+python -m video_platform.cli --config configs/ingestion.yaml
+```
+
+`--config` takes priority over the individual `--streams`/`--fps`/
+`--width`/`--height`/`--kafka-*` flags when both are given. An invalid
+config (bad YAML, unknown field, out-of-range value) fails fast with a
+message naming the bad field before any stream is started — see
+`src/video_platform/config.py`.
+
 ## 10. Evaluation
 
 Document evaluation metrics and how to reproduce them here (see `docs/evaluation.md`).
