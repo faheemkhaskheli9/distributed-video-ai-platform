@@ -103,8 +103,25 @@ python -m video_platform.cli --streams 3 --frames 2 --fps 10 --width 320 --heigh
 ```
 
 The Phase 1 simulator emits newline-delimited JSON metadata. Frame pixels are
-generated deterministically in memory; Kafka publication is intentionally left
-to its dedicated Phase 1 issue.
+generated deterministically in memory.
+
+To also publish frames to Kafka, start a local broker and pass
+`--kafka-bootstrap-servers`:
+
+```bash
+docker compose -f docker/docker-compose.yml up -d
+python -m video_platform.cli --streams 3 --frames 2 \
+    --kafka-bootstrap-servers localhost:9092 --kafka-topic video-frames
+```
+
+**Topic/partition strategy:** every message is keyed by `stream_id`. Kafka's
+default partitioner hashes the key, so all frames for a given stream always
+land on the same partition — and Kafka only guarantees ordering within a
+partition — which is what preserves per-stream frame ordering. Frames from
+different streams may land on different partitions and are not ordered
+relative to each other. See `src/video_platform/kafka_publisher.py` for the
+serialization format and `docker/docker-compose.yml` for the local
+single-broker dev/test instance.
 
 ## 10. Evaluation
 

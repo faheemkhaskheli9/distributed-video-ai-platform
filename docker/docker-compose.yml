@@ -1,0 +1,32 @@
+version: "3.8"
+
+# Local single-broker Kafka for development and testing of the Phase 1
+# ingestion pipeline. Not used by automated tests (those run against an
+# in-memory fake producer) - start this only when exercising the CLI's
+# --kafka-bootstrap-servers option by hand.
+#
+# Usage:
+#   docker compose -f docker/docker-compose.yml up -d
+#   python -m video_platform.cli --streams 3 --frames 2 \
+#       --kafka-bootstrap-servers localhost:9092 --kafka-topic video-frames
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"

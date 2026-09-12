@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from .kafka_publisher import DEFAULT_TOPIC, FramePublisher
 from .simulator import MultiStreamSimulator
 
 
@@ -18,6 +19,14 @@ def main() -> int:
     parser.add_argument("--fps", type=float, default=10.0)
     parser.add_argument("--width", type=positive_int, default=320)
     parser.add_argument("--height", type=positive_int, default=180)
+    parser.add_argument(
+        "--kafka-bootstrap-servers",
+        default=None,
+        help="host:port of a Kafka broker (e.g. localhost:9092). "
+        "When set, frames are also published to --kafka-topic. "
+        "See docker/docker-compose.yml for a local dev broker.",
+    )
+    parser.add_argument("--kafka-topic", default=DEFAULT_TOPIC)
     args = parser.parse_args()
 
     try:
@@ -26,6 +35,12 @@ def main() -> int:
         )
     except ValueError as exc:
         parser.error(str(exc))
+
+    publisher = None
+    if args.kafka_bootstrap_servers:
+        publisher = FramePublisher.for_bootstrap_servers(
+            args.kafka_bootstrap_servers, topic=args.kafka_topic
+        )
 
     for stream_id in simulator.stream_ids:
         simulator.start(stream_id)
@@ -38,6 +53,10 @@ def main() -> int:
                 "resolution": [frame.width, frame.height],
                 "bytes": len(frame.pixels),
             }))
+            if publisher is not None:
+                publisher.publish(frame)
+    if publisher is not None:
+        publisher.flush()
     return 0
 
 
